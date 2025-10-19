@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ITPLE - Plataforma Educativa</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<style>
+  :root {
+    /* Paleta Oscura */
+    --primary-color: #5d9cec;      /* Azul claro para acentos */
+    --secondary-color: #FF7043;    /* Naranja/Rojo de acento */
+    --background-dark: #121212;    /* Negro/Gris muy oscuro (Fondo principal) */
+    --card-dark: #1e1e1e;          /* Gris oscuro para elementos flotantes (tarjetas, nav) */
+    --text-dark: #ffffff;          /* Texto principal blanco */
+    --text-muted: #aaaaaa;         /* Texto gris claro para detalles */
+    --nav-background: #1e1e1e;     /* Fondo de navegación */
+    --nav-hover-bg: #2a2a2a;       /* Fondo al pasar el ratón por nav item */
+    --nav-active-bg: #333333;      /* Fondo de nav item activo */
+    --border-radius-lg: 15px;
+    --border-radius-sm: 8px;       
+    --shadow-deep: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --input-background: #333333;
+    --input-border: #444444;
+    --success-color: #4CAF50; /* Verde para éxito */
+    --warning-color: #FFC107; /* Amarillo para pendiente */
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-dark); 
+    color: var(--text-dark); 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* --- Estilos para Login/Registro Moderno --- */
+  #login, #registro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    background: var(--background-dark); 
+  }
+  #login-box, #registro-box {
+    background: var(--card-dark); 
+    padding: 40px;
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-deep);
+    text-align: center;
+    color: var(--text-dark);
+  }
+  #login-box h2, #registro-box h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 700;
+  }
+  /* Estilo para el título largo del login */
+  #login-box h2.welcome-title {
+    font-size: 1.8em; 
+    line-height: 1.2;
+  }
+  /* Estilos de input y botones */
+  .input-group { position: relative; margin-bottom: 25px; }
+  .input-group i { 
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%); 
+    color: var(--text-muted); 
+    z-index: 10;
+  }
+  input[type="text"], input[type="password"], #claseForm input { 
+    width: calc(100% - 30px);
+    padding: 12px 15px 12px 45px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius-sm); 
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s;
+    background-color: var(--input-background); 
+    color: var(--text-dark); 
+  }
+  input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(93, 156, 236, 0.3);
+    outline: none;
+  }
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  .button-group button {
+    flex: 1;
+    padding: 14px 25px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+  }
+  .btn-primary { background-color: var(--primary-color); color: var(--background-dark); }
+  .btn-primary:hover { background-color: #4886e0; transform: translateY(-2px); }
+  .btn-secondary { background-color: var(--secondary-color); color: var(--background-dark); }
+  .btn-secondary:hover { background-color: #e55c32; transform: translateY(-2px); }
+  #errorMsg, #regMsg { 
+      font-weight: 600; 
+      margin-top: 20px; 
+      color: var(--secondary-color); 
+  }
+  #regMsg[style*="color: rgb(0, 128, 0)"], 
+  #regMsg[style*="color:#008000"] {
+      color: #4CAF50 !important; 
+  }
+  #errorMsg[style*="color: rgb(230, 0, 0)"], 
+  #regMsg[style*="color: rgb(230, 0, 0)"] {
+      color: #E57373 !important; 
+  }
+  
+
+  /* --- Estilos del Dashboard --- */
+  #app {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-dark); 
+  }
+  
+  #app > header {
+    background-color: var(--card-dark); 
+    color: var(--text-dark);
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-bottom: 1px solid #333333; 
+  }
+  #app > header h1 { 
+    margin: 0; 
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex; 
+    align-items: center;
+    gap: 15px;
+  }
+  
+  /* Botón de menú (hamburguesa) */
+  #menu-toggle {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 15px; 
+    transition: color 0.2s;
+  }
+  #menu-toggle:hover {
+    color: var(--text-dark);
+  }
+
+  /* CONTENEDOR PRINCIPAL: Flex para barra lateral y contenido */
+  .container { 
+    display: flex; 
+    flex-grow: 1; 
+    width: 100%; 
+    transition: transform 0.3s ease; 
+  }
+
+  /* --- NAVEGACIÓN LATERAL MODERNA --- */
+  nav {
+    width: 260px; 
+    min-width: 260px;
+    background-color: var(--nav-background); 
+    box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    padding: 20px 15px; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px; 
+    transition: margin-left 0.3s ease; 
+  }
+  
+  /* Clase para ocultar el menú (efecto plegado) */
+  .container.collapsed nav {
+    margin-left: -260px; 
+    min-width: 0;
+  }
+
+  /* El contenido principal ocupa el 100% cuando la nav está oculta */
+  .container.collapsed main {
+      flex: 1 1 100%;
+  }
+
+  nav a {
+    padding: 12px 20px; 
+    color: var(--text-muted); 
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+    font-weight: 500;
+    font-size: 1.05em; 
+    border-radius: var(--border-radius-sm); 
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  nav a i { 
+    font-size: 1.3em; 
+    width: 25px; 
+    text-align: center; 
+  }
+  nav a:hover { 
+    background-color: var(--nav-hover-bg); 
+    color: var(--primary-color); 
+  }
+  nav a.active-link { 
+    background-color: var(--nav-active-bg); 
+    color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3); 
+  }
+
+  /* --- Contenido Principal --- */
+  main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background-color: var(--background-dark); 
+    color: var(--text-dark); 
+  }
+  main h2 {
+    color: var(--secondary-color); 
+    border-bottom: 2px solid #333333;
+    padding-bottom: 10px;
+    font-size: 1.8em;
+  }
+
+  /* Estilos para cards, formularios, tablas, etc. */
+  .content-card {
+    background: var(--card-dark); 
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-deep);
+    margin-bottom: 20px;
+    color: var(--text-dark); 
+  }
+  .content-card h3 {
+    color: var(--primary-color);
+    border-bottom: 1px solid #333333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  
+  /* Estilos de inputs para formularios */
+  #tareaForm input, #tareaForm select {
+    background-color: var(--input-background);
+    color: var(--text-dark);
+    border: 1px solid var(--input-border);
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  #claseForm input {
+    width: calc(100% - 150px);
+    margin-right: 10px;
+  }
+  
+  /* Estilo para el checkbox de 'requiere entrega' */
+  #requiereEntregaDiv {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 20px;
+    color: var(--text-muted);
+  }
+  #requiereEntrega {
+    width: auto !important; 
+    padding: 0;
+    margin: 0;
+  }
+
+  .codigo-resaltado {
+    font-weight: 700;
+    color: var(--secondary-color);
+    background-color: #3e2723; 
+    border: 1px dashed var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-left: 10px;
+    display: inline-block;
+  }
+
+  /* Estilos de tabla */
+  table { 
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td { padding: 12px 15px; text-align: left; vertical-align: top; }
+  th { background-color: var(--primary-color); color: var(--background-dark); font-weight: 600; }
+  tr:nth-child(even) { background-color: #2a2a2a; }
+  tr:hover { background-color: #333333; }
+  td { color: var(--text-dark); } 
+  
+  /* Estilos de inputs en tabla (Calificaciones) */
+  td input {
+    width: 100%;
+    padding: 8px;
+    margin: 0;
+    border-radius: 4px;
+    border: 1px solid #555555;
+    box-sizing: border-box;
+    font-size: 0.95em;
+    background-color: #444444; 
+    color: var(--text-dark);
+  }
+  /* Resaltar campos editables */
+  td input:read-only {
+    border: none;
+    background-color: transparent; 
+    color: var(--text-muted); 
+  }
+  /* Estilo cuando el input se vuelve editable */
+  tr.editing-row input {
+      border: 1px solid var(--primary-color);
+      background-color: var(--input-background);
+      color: var(--text-dark);
+  }
+
+  /* Indicadores de estado de entrega */
+  .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 0.9em;
+  }
+  .status-pending { background-color: var(--warning-color); color: var(--background-dark); }
+  .status-delivered { background-color: var(--success-color); color: var(--background-dark); }
+  .status-not-required { background-color: var(--text-muted); color: var(--card-dark); }
+  
+  /* Botones de acción general */
+  .action-btn {
+    padding: 5px 10px; 
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+  .btn-delete {
+    background-color: #b71c1c; 
+    color: white;
+  }
+  .btn-delete:hover {
+    background-color: #d32f2f;
+  }
+  /* Botones de acción específicos para notas */
+  .btn-edit { background-color: #64B5F6; color: white; }
+  .btn-edit:hover { background-color: #42A5F5; }
+  .btn-save { background-color: #4CAF50; color: white; display: none; } 
+  .btn-save:hover { background-color: #43A047; }
+  .btn-view { background-color: #FFB300; color: var(--background-dark); }
+  .btn-view:hover { background-color: #FFA000; }
+  /* Grupo de botones principales */
+  .main-button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Estilos para el formulario de entrega (Estudiante) */
+  .entrega-form {
+    padding-top: 15px;
+    border-top: 1px solid #333;
+    margin-top: 15px;
+  }
+  .entrega-form input[type="file"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #333333;
+    border-radius: 5px;
+    color: var(--text-dark);
+    border: 1px solid #555555;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div id="login">
+  <div id="login-box">
+    <h2 class="welcome-title">BIENVENIDOS A ITPLE</h2>
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="username" placeholder="Usuario o correo">
+    </div>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="password" placeholder="Contraseña">
+    </div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+      <button class="btn-secondary" onclick="mostrarRegistro()"><i class="fas fa-user-plus"></i> Registrarse</button>
+    </div>
+    <p id="errorMsg"></p>
+  </div>
+</div>
+
+<div id="registro" style="display:none;">
+  <div id="registro-box">
+    <h2>Registrar nuevo estudiante</h2>
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="text" id="regUsuario" placeholder="Correo (usuario)">
+    </div>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="regPassword" placeholder="Contraseña">
+    </div>
+    <div class="input-group">
+      <i class="fas fa-key"></i>
+      <input type="text" id="regCodigoClase" placeholder="Código de Clase">
+    </div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="registrar()"><i class="fas fa-check-circle"></i> Registrar</button>
+      <button class="btn-secondary" onclick="mostrarLogin()"><i class="fas fa-arrow-alt-circle-left"></i> Volver</button>
+    </div>
+    <p id="regMsg"></p>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <header>
+    <h1>
+      <button id="menu-toggle" onclick="toggleNav()">
+        <i class="fas fa-bars"></i>
+      </button>
+      ITPLE Plataforma Educativa
+    </h1>
+    <button class="btn-secondary" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+  </header>
+  <div class="container">
+    <nav>
+      <a href="#" id="nav-home" onclick="mostrar('tablero', this)"><i class="fas fa-home"></i> Home</a> 
+      <a href="#" id="nav-tablero" onclick="mostrar('tablero', this)"><i class="fas fa-th-large"></i> Tablero</a>
+      <a href="#" id="nav-cursos" onclick="mostrar('cursos', this)"><i class="fas fa-book-open"></i> Cursos</a>
+      <a href="#" id="nav-tareas" onclick="mostrar('tareas', this)"><i class="fas fa-pencil-alt"></i> Tareas</a>
+      <a href="#" id="nav-calificaciones" onclick="mostrar('calificaciones', this)"><i class="fas fa-chart-bar"></i> Calificaciones</a>
+    </nav>
+    <main>
+      <section id="tablero" style="display:none;">
+        <h2>Tablero Principal / Home</h2>
+        <div class="content-card">
+          <h3>Resumen Rápido</h3>
+          <p>Bienvenido. Usuario: <span id="currentUser"></span>. Rol: <span id="currentRole"></span>.</p>
+          <p id="codigoClaseEstudiante">Tu código de clase asociado es: <span id="userCode" class="codigo-resaltado">N/A</span></p>
+          
+          <p id="nombreCurso"></p> 
+        </div>
+      </section>
+
+      <section id="cursos" style="display:none;">
+        <h2>Gestión de Cursos</h2>
+        <div id="cursosContainer" class="content-card"></div>
+      </section>
+
+      <section id="tareas" style="display:none;">
+        <h2>Gestión de Tareas y Talleres</h2>
+        <div id="tareasContainer" class="content-card"></div>
+      </section>
+
+      <section id="calificaciones" style="display:none;">
+        <h2>Notas / Calificaciones</h2>
+        <div id="notasContainer" class="content-card"></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  let userRole = null;
+  let CodigosDeClase = {}; 
+  let CursosDisponibles = []; 
+
+  // --- Funciones de Utilidad ---
+
+  function inicializarCursos() {
+    // Inicialización de clases de profesor (sin cambios)
+    if (!localStorage.getItem('profesorClases')) {
+        localStorage.setItem('profesorClases', JSON.stringify([
+            { nombre: 'Introducción a la Programación', codigo: 'PROG2025' },
+            { nombre: 'Bases de Datos Relacionales', codigo: 'DB2025' }
+        ]));
+    }
+    // Inicialización de entregas (NUEVO)
+    if (!localStorage.getItem('entregas')) {
+        localStorage.setItem('entregas', JSON.stringify([]));
+    }
+    // Inicialización de tareas (Modificado para añadir 'requiereEntrega')
+    if (!localStorage.getItem('tareas')) {
+        localStorage.setItem('tareas', JSON.stringify([
+            { nombre: 'Cuestionario Inicial', curso: 'Introducción a la Programación', fechaLimite: '2025-10-20', requiereEntrega: false },
+            { nombre: 'Taller de Normalización', curso: 'Bases de Datos Relacionales', fechaLimite: '2025-10-30', requiereEntrega: true }
+        ]));
+    }
+    
+    const clasesGuardadas = JSON.parse(localStorage.getItem('profesorClases')) || [];
+    
+    CodigosDeClase = {};
+    CursosDisponibles = [];
+    clasesGuardadas.forEach(clase => {
+        CodigosDeClase[clase.codigo] = clase.nombre;
+        CursosDisponibles.push(clase.nombre);
+    });
+  }
+  
+  function generarCodigoClase(nombreClase) {
+      const partes = nombreClase.toUpperCase().split(' ').map(p => p.substring(0, 3)).join('');
+      const base = partes.substring(0, 3);
+      const num = Math.floor(100 + Math.random() * 900);
+      return `${base.padEnd(3, 'X')}-${num}`;
+  }
+
+
+  // --- Funciones de Autenticación y Navegación (sin cambios) ---
+
+  function login(){
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    document.getElementById('errorMsg').textContent = ''; 
+
+    inicializarCursos(); 
+
+    const registrados = JSON.parse(localStorage.getItem('usuarios')) || [];
+    let loggedUser = null;
+
+    if(user==='itple_prof' && pass==='ple2017'){
+      userRole = 'profesor';
+      loggedUser = { usuario: user, codigo: 'N/A' };
+    } 
+    else if(user==='ple' && pass==='2017'){
+      userRole = 'estudiante';
+      const defaultCode = Object.keys(CodigosDeClase)[0] || 'N/A';
+      loggedUser = { usuario: user, codigo: defaultCode }; 
+    }
+    else {
+      const encontrado = registrados.find(u => u.usuario===user && u.password===pass);
+      if(encontrado){
+          userRole = 'estudiante';
+          loggedUser = encontrado;
+      }
+    }
+    
+    if(loggedUser){
+        iniciarSesion(loggedUser);
+    } else {
+        document.getElementById('errorMsg').textContent='Usuario o contraseña incorrectos';
+    }
+  }
+
+  function iniciarSesion(userObj){
+    localStorage.setItem('userLogged', userObj.usuario);
+    localStorage.setItem('userRole', userRole);
+    localStorage.setItem('userCode', userObj.codigo);
+
+    document.getElementById('login').style.display='none';
+    document.getElementById('registro').style.display='none';
+    document.getElementById('app').style.display='flex';
+    document.getElementById('currentUser').textContent = userObj.usuario;
+    document.getElementById('currentRole').textContent = userRole;
+
+    const nombreCursoElement = document.getElementById('nombreCurso');
+    if (userRole === 'estudiante') {
+        document.getElementById('codigoClaseEstudiante').style.display = 'block';
+        document.getElementById('userCode').textContent = userObj.codigo;
+        
+        const nombreClase = CodigosDeClase[userObj.codigo] || 'Curso no encontrado';
+        nombreCursoElement.innerHTML = `Clase Activa: **${nombreClase}**`;
+    } else {
+        document.getElementById('codigoClaseEstudiante').style.display = 'none';
+        nombreCursoElement.textContent = 'Modo Profesor: Administra tus clases y tareas.';
+    }
+
+    cargarDatos();
+  }
+
+  function mostrarRegistro(){
+    document.getElementById('login').style.display='none';
+    document.getElementById('registro').style.display='flex';
+    document.getElementById('regMsg').textContent=''; 
+    document.getElementById('regUsuario').value='';
+    document.getElementById('regPassword').value='';
+    document.getElementById('regCodigoClase').value='';
+  }
+  function mostrarLogin(){
+    document.getElementById('registro').style.display='none';
+    document.getElementById('login').style.display='flex';
+    document.getElementById('errorMsg').textContent=''; 
+    document.getElementById('username').value='';
+    document.getElementById('password').value='';
+  }
+
+  function registrar(){
+    const usuario = document.getElementById('regUsuario').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    const codigo = document.getElementById('regCodigoClase').value.trim().toUpperCase();
+    
+    if(!usuario || !password || !codigo){
+      document.getElementById('regMsg').textContent='❌ Completa todos los campos.';
+      document.getElementById('regMsg').style.color='#e60000';
+      return;
+    }
+
+    if(!CodigosDeClase[codigo]){
+        document.getElementById('regMsg').textContent='❌ Código de clase inválido. Verifica con tu profesor.';
+        document.getElementById('regMsg').style.color='#e60000';
+        return;
+    }
+    
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    
+    if(usuarios.some(u => u.usuario === usuario)){
+      document.getElementById('regMsg').textContent='❌ El usuario ya existe.';
+      document.getElementById('regMsg').style.color='#e60000';
+      return;
+    }
+    
+    usuarios.push({usuario, password, codigo: codigo});
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    
+    document.getElementById('regMsg').textContent=`✅ Registro exitoso para el curso: ${CodigosDeClase[codigo]}. Ahora puedes iniciar sesión.`;
+    document.getElementById('regMsg').style.color='#008000'; 
+  }
+
+  // FUNCIÓN CLAVE: Maneja la activación visual de UN SOLO enlace
+  function mostrar(seccion, element) {
+    // 1. Oculta todas las secciones
+    document.querySelectorAll('main section').forEach(s => s.style.display='none');
+    // 2. Muestra la sección seleccionada
+    document.getElementById(seccion).style.display='block';
+
+    // 3. Desactiva *todos* los enlaces de navegación
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-link'));
+    
+    // 4. Activa SOLO el enlace presionado
+    if (element) {
+      element.classList.add('active-link');
+    }
+    
+    // 5. Recarga datos si es una sección que lo requiere
+    if (seccion === 'cursos' || seccion === 'tareas' || seccion === 'calificaciones') {
+        cargarDatos();
+    }
+  }
+  
+  // FUNCIÓN: Plegar/Desplegar la barra de navegación
+  function toggleNav() {
+      const container = document.querySelector('.container');
+      container.classList.toggle('collapsed');
+  }
+  
+
+  function cerrarSesion(){
+    localStorage.removeItem('userLogged');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userCode');
+    document.getElementById('app').style.display='none';
+    document.getElementById('login').style.display='flex';
+  }
+
+  // --- Funciones de Datos y Carga ---
+
+  function cargarDatos(){
+    inicializarCursos(); 
+
+    const role = localStorage.getItem('userRole');
+    const userCode = localStorage.getItem('userCode');
+    const notasContainer = document.getElementById('notasContainer');
+    const cursosContainer = document.getElementById('cursosContainer');
+    const tareasContainer = document.getElementById('tareasContainer');
+    const user = localStorage.getItem('userLogged');
+
+    if (role === 'profesor') {
+        cargarCursosProfesor(cursosContainer);
+    } else {
+        cargarCursosEstudiante(cursosContainer, userCode);
+    }
+
+    const tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+    
+    if(role === 'profesor'){
+      cargarTareasProfesor(tareas, tareasContainer); // MODIFICADO
+    } else {
+      cargarTareasEstudiante(tareas, tareasContainer, userCode, user); // MODIFICADO
+    }
+
+    if(role==='profesor'){
+      cargarNotasProfesor(notasContainer);
+    } else {
+      cargarNotasEstudiante(notasContainer, user);
+    }
+  }
+  
+  // (Funciones cargarCursosProfesor, crearClase, eliminarClase, cargarCursosEstudiante - Sin cambios relevantes para esta tarea)
+  function cargarCursosProfesor(container) {
+      const clases = JSON.parse(localStorage.getItem('profesorClases')) || [];
+      const registrados = JSON.parse(localStorage.getItem('usuarios')) || []; 
+      
+      let tablaClases = '';
+      if (clases.length === 0) {
+          tablaClases = '<p>No has creado ninguna clase aún.</p>';
+      } else {
+          tablaClases = `
+              <h3>Clases Creadas y Estudiantes</h3>
+              <table>
+                  <tr><th>Curso</th><th>Código de Clase</th><th>Estudiantes Unidos</th><th>Acción</th></tr>
+          `;
+          clases.forEach(clase => {
+              const estudiantesUnidos = registrados.filter(u => u.codigo === clase.codigo);
+              
+              tablaClases += `
+                  <tr>
+                      <td>${clase.nombre}</td>
+                      <td><span class="codigo-resaltado">${clase.codigo}</span></td>
+                      <td>
+                          <ul>
+                              ${estudiantesUnidos.length > 0 
+                                  ? estudiantesUnidos.map(e => `<li>${e.usuario}</li>`).join('') 
+                                  : '<li>Nadie se ha unido aún.</li>'}
+                          </ul>
+                      </td>
+                      <td>
+                          <button class="action-btn btn-delete" onclick="eliminarClase('${clase.codigo}', '${clase.nombre}')">🗑️ Eliminar</button>
+                      </td>
+                  </tr>
+              `;
+          });
+          tablaClases += '</table>';
+      }
+
+      container.innerHTML = `
+          <h3>Crear Nuevo Curso</h3>
+          <div id="claseForm">
+              <input type="text" id="nombreClase" placeholder="Nombre del Curso (Ej: Álgebra Lineal)" required>
+              <button class="btn-primary" onclick="crearClase()">➕ Crear Clase</button>
+          </div>
+          ${tablaClases}
+      `;
+  }
+  
+  function crearClase() {
+      const nombreClase = document.getElementById('nombreClase').value.trim();
+      if (!nombreClase) {
+          alert('Por favor, ingresa un nombre para la clase.');
+          return;
+      }
+      
+      const codigo = generarCodigoClase(nombreClase);
+      
+      let clases = JSON.parse(localStorage.getItem('profesorClases')) || [];
+      
+      if (clases.some(c => c.nombre.toUpperCase() === nombreClase.toUpperCase())) {
+          alert('Ya existe una clase con ese nombre.');
+          return;
+      }
+
+      clases.push({ nombre: nombreClase, codigo: codigo });
+      localStorage.setItem('profesorClases', JSON.stringify(clases));
+      
+      document.getElementById('nombreClase').value = '';
+      alert(`Clase "${nombreClase}" creada con éxito. Código: ${codigo}. Compártelo con tus estudiantes.`);
+      cargarDatos(); 
+  }
+  
+  function eliminarClase(codigo, nombre) {
+      if (!confirm(`⚠️ ¿Estás seguro de que deseas eliminar la clase "${nombre}" (Código: ${codigo})?`)) {
+          return;
+      }
+      
+      let clases = JSON.parse(localStorage.getItem('profesorClases')) || [];
+      
+      const clasesActualizadas = clases.filter(c => c.codigo !== codigo);
+      localStorage.setItem('profesorClases', JSON.stringify(clasesActualizadas));
+      
+      alert(`Clase "${nombre}" eliminada correctamente.`);
+      cargarDatos(); 
+  }
+
+  function cargarCursosEstudiante(container, userCode){
+      let cursoAsignado = CodigosDeClase[userCode] || 'No Asignado';
+      
+      container.innerHTML = `
+        <h3>Cursos Inscritos</h3>
+        <p>Estás inscrito en:</p>
+        <ul>
+          <li>**${cursoAsignado}** (Código: <span class="codigo-resaltado">${userCode}</span>)</li>
+          <li>*Si necesitas cambiar de clase, pide un nuevo código a tu profesor y regístrate con él o contacta al administrador.*</li>
+        </ul>
+      `;
+  }
+
+  // FUNCIÓN MODIFICADA: Ahora incluye el estado de entrega y el formulario de subida
+  function cargarTareasEstudiante(tareas, container, userCode, estudianteUser){
+      const cursoEstudiante = CodigosDeClase[userCode];
+      const tareasFiltradas = tareas.filter(t => t.curso === cursoEstudiante);
+      const entregas = JSON.parse(localStorage.getItem('entregas')) || [];
+
+      if(tareasFiltradas.length === 0){
+          container.innerHTML = `<h3>Próximas Tareas</h3><p>¡Felicidades! No tienes tareas pendientes en tu curso: **${cursoEstudiante}**.</p>`;
+          return;
+      }
+
+      let tabla = '<h3>Tareas Asignadas a tu Curso</h3><table><tr><th>Tarea</th><th>Curso</th><th>Fecha Límite</th><th>Entrega Requerida</th><th>Estado</th><th>Acción</th></tr>';
+      
+      tareasFiltradas.forEach(t => {
+          const entregaExistente = entregas.find(e => e.estudiante === estudianteUser && e.tarea === t.nombre);
+          let estadoHTML = '';
+          let accionHTML = '';
+
+          if (!t.requiereEntrega) {
+              estadoHTML = `<span class="status-badge status-not-required">No Requiere</span>`;
+              accionHTML = ``;
+          } else if (entregaExistente) {
+              estadoHTML = `<span class="status-badge status-delivered">Entregada</span>`;
+              accionHTML = `<button class="action-btn btn-view" onclick="alert('Ya entregaste: ${entregaExistente.archivo}. Fecha: ${entregaExistente.fechaEntrega}')"><i class="fas fa-eye"></i> Ver</button>`;
+          } else {
+              estadoHTML = `<span class="status-badge status-pending">Pendiente</span>`;
+              // Botón que muestra el formulario de entrega
+              accionHTML = `<button class="btn-primary action-btn" onclick="mostrarFormularioEntrega('${t.nombre}', '${t.curso}')"><i class="fas fa-upload"></i> Entregar</button>`;
+          }
+
+          tabla += `
+              <tr>
+                  <td>${t.nombre}</td>
+                  <td>${t.curso}</td>
+                  <td>${t.fechaLimite}</td>
+                  <td>${t.requiereEntrega ? 'Sí' : 'No'}</td>
+                  <td>${estadoHTML}</td>
+                  <td>${accionHTML}</td>
+              </tr>
+              <tr id="entrega-form-row-${t.nombre.replace(/\s/g, '-')}" style="display: none;">
+                <td colspan="6">
+                  <div class="entrega-form">
+                    <h4>Subir Taller/Tarea: **${t.nombre}**</h4>
+                    <input type="file" id="file-${t.nombre.replace(/\s/g, '-')}" accept=".pdf,.doc,.docx,image/*" required>
+                    <button class="btn-secondary" onclick="entregarTarea('${t.nombre}')"><i class="fas fa-paper-plane"></i> Finalizar Entrega</button>
+                  </div>
+                </td>
+              </tr>
+          `;
+      });
+      tabla += '</table>';
+      container.innerHTML = tabla;
+  }
+  
+  // NUEVA FUNCIÓN: Muestra u oculta el formulario de entrega
+  function mostrarFormularioEntrega(nombreTarea, curso) {
+    const rowId = `entrega-form-row-${nombreTarea.replace(/\s/g, '-')}`;
+    const row = document.getElementById(rowId);
+    
+    // Ocultar cualquier otro formulario abierto
+    document.querySelectorAll('[id^="entrega-form-row-"]').forEach(r => {
+        if(r.id !== rowId && r.style.display !== 'none'){
+            r.style.display = 'none';
+        }
+    });
+
+    // Mostrar u ocultar el formulario actual
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+  }
+
+  // NUEVA FUNCIÓN: Simula la entrega de la tarea
+  function entregarTarea(nombreTarea) {
+      const fileInput = document.getElementById(`file-${nombreTarea.replace(/\s/g, '-')}`);
+      
+      if (!fileInput || fileInput.files.length === 0) {
+          alert('Por favor, selecciona un archivo (documento o foto) para entregar.');
+          return;
+      }
+      
+      const archivo = fileInput.files[0];
+      const estudianteUser = localStorage.getItem('userLogged');
+      const userCode = localStorage.getItem('userCode');
+      const curso = CodigosDeClase[userCode];
+      
+      const nuevaEntrega = {
+          estudiante: estudianteUser,
+          tarea: nombreTarea,
+          curso: curso,
+          archivo: archivo.name, 
+          fechaEntrega: new Date().toLocaleDateString(),
+          // En una app real, aquí se subiría el archivo a un servidor.
+      };
+
+      let entregas = JSON.parse(localStorage.getItem('entregas')) || [];
+      // Verificar si ya existe una entrega para esta tarea y estudiante
+      const indiceExistente = entregas.findIndex(e => e.estudiante === estudianteUser && e.tarea === nombreTarea);
+
+      if (indiceExistente !== -1) {
+          if (!confirm(`Ya entregaste esta tarea. ¿Deseas reemplazar la entrega anterior con "${archivo.name}"?`)) {
+              return;
+          }
+          entregas[indiceExistente] = nuevaEntrega; // Reemplazar
+      } else {
+          entregas.push(nuevaEntrega); // Nueva entrega
+      }
+      
+      localStorage.setItem('entregas', JSON.stringify(entregas));
+      alert(`✅ Tarea "${nombreTarea}" entregada con éxito: ${archivo.name}.`);
+      
+      // Recargar la vista para actualizar el estado
+      cargarDatos(); 
+      mostrar('tareas', document.getElementById('nav-tareas'));
+  }
+  
+  // FUNCIÓN MODIFICADA: Ahora recoge el valor del checkbox
+  function cargarTareasProfesor(tareas, container){
+      let cursoOptions = CursosDisponibles.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      container.innerHTML = `
+        <h3>Agregar Nueva Tarea/Taller</h3>
+        <div id="tareaForm" style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <input type="text" id="nombreTarea" placeholder="Nombre de Tarea o Taller" required style="flex: 2;">
+            <select id="cursoTarea" required style="flex: 1;">
+                <option value="">Selecciona Curso</option>
+                ${cursoOptions}
+            </select>
+            <input type="date" id="fechaLimiteTarea" title="Fecha Límite" required style="flex: 1;">
+            <div id="requiereEntregaDiv">
+                <input type="checkbox" id="requiereEntrega" checked>
+                <label for="requiereEntrega">Requiere Entrega (Taller)</label>
+            </div>
+            <button class="btn-primary" onclick="agregarTarea()" style="flex: 1; min-width: 150px;">➕ Publicar</button>
+        </div>
+        
+        <h3>Tareas Publicadas</h3>
+        <div id="listaTareasPublicadas"></div>
+      `;
+      
+      mostrarTareasPublicadas(tareas, document.getElementById('listaTareasPublicadas'));
+  }
+
+  // FUNCIÓN MODIFICADA: Ahora muestra si la tarea es un taller y permite ver entregas
+  function mostrarTareasPublicadas(tareas, element){
+      if(tareas.length === 0){
+          element.innerHTML = '<p>No hay tareas publicadas aún.</p>';
+          return;
+      }
+      
+      let tabla = '<table><tr><th>Tarea</th><th>Curso</th><th>Fecha Límite</th><th>Tipo</th><th>Acciones</th></tr>';
+      tareas.forEach((t, index) => {
+          const tipo = t.requiereEntrega ? 'Taller / Archivo' : 'Cuestionario / Tarea simple';
+          const claseTipo = t.requiereEntrega ? 'btn-view' : 'btn-secondary';
+          
+          let accionesHTML = '';
+          if (t.requiereEntrega) {
+             accionesHTML += `<button class="action-btn btn-view" onclick="verEntregas('${t.nombre}')"><i class="fas fa-clipboard-list"></i> Ver Entregas</button>`;
+          }
+          accionesHTML += `<button class="action-btn btn-delete" onclick="eliminarTarea(${index})"><i class="fas fa-trash"></i> Eliminar</button>`;
+
+          tabla += `<tr>
+              <td>${t.nombre}</td>
+              <td>${t.curso}</td>
+              <td>${t.fechaLimite}</td>
+              <td>${tipo}</td>
+              <td>${accionesHTML}</td>
+          </tr>`;
+      });
+      tabla += '</table>';
+      element.innerHTML = tabla;
+  }
+  
+  // NUEVA FUNCIÓN: Muestra las entregas de una tarea para el profesor
+  function verEntregas(nombreTarea) {
+      const entregas = JSON.parse(localStorage.getItem('entregas')) || [];
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      const tarea = JSON.parse(localStorage.getItem('tareas')).find(t => t.nombre === nombreTarea);
+      
+      if (!tarea) return alert('Tarea no encontrada.');
+
+      const estudiantesDeCurso = usuarios.filter(u => u.codigo === Object.keys(CodigosDeClase).find(k => CodigosDeClase[k] === tarea.curso));
+      
+      let listaEntregas = `<h4>Estado de Entregas para: **${nombreTarea}** (${tarea.curso})</h4>`;
+      listaEntregas += `<table><tr><th>Estudiante</th><th>Estado</th><th>Archivo Entregado</th><th>Fecha</th></tr>`;
+
+      if (estudiantesDeCurso.length === 0) {
+          listaEntregas += `<tr><td colspan="4">No hay estudiantes inscritos en este curso.</td></tr>`;
+      } else {
+          estudiantesDeCurso.forEach(estudiante => {
+              const entrega = entregas.find(e => e.estudiante === estudiante.usuario && e.tarea === nombreTarea);
+              let estado, archivo, fecha;
+
+              if (entrega) {
+                  estado = `<span class="status-badge status-delivered">Entregó</span>`;
+                  archivo = entrega.archivo;
+                  fecha = entrega.fechaEntrega;
+              } else {
+                  estado = `<span class="status-badge status-pending">Pendiente</span>`;
+                  archivo = 'N/A';
+                  fecha = 'N/A';
+              }
+
+              listaEntregas += `<tr>
+                  <td>${estudiante.usuario}</td>
+                  <td>${estado}</td>
+                  <td>${archivo}</td>
+                  <td>${fecha}</td>
+              </tr>`;
+          });
+      }
+      
+      listaEntregas += '</table>';
+      
+      document.getElementById('listaTareasPublicadas').innerHTML = listaEntregas + 
+        `<div class="main-button-group"><button class="btn-primary" onclick="cargarDatos()"><i class="fas fa-arrow-left"></i> Volver a Tareas</button></div>`;
+  }
+
+
+  // FUNCIÓN MODIFICADA: Ahora recoge el valor del checkbox
+  function agregarTarea(){
+      const nombre = document.getElementById('nombreTarea').value.trim();
+      const curso = document.getElementById('cursoTarea').value.trim();
+      const fechaLimite = document.getElementById('fechaLimiteTarea').value.trim();
+      const requiereEntrega = document.getElementById('requiereEntrega').checked;
+
+      if(!nombre || !curso || !fechaLimite){
+          alert('Por favor, completa todos los campos de la tarea.');
+          return;
+      }
+
+      let tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+      tareas.push({nombre, curso, fechaLimite, requiereEntrega});
+      localStorage.setItem('tareas', JSON.stringify(tareas));
+      
+      document.getElementById('nombreTarea').value = '';
+      document.getElementById('cursoTarea').value = '';
+      document.getElementById('fechaLimiteTarea').value = '';
+      document.getElementById('requiereEntrega').checked = true;
+      
+      cargarDatos();
+      alert(`Tarea "${nombre}" agregada exitosamente.${requiereEntrega ? ' (Requiere entrega de archivo/taller)' : ''}`);
+  }
+
+  function eliminarTarea(index){
+      if(!confirm('¿Estás seguro de que quieres eliminar esta tarea? (Esto no elimina las notas asociadas)')){
+          return;
+      }
+      let tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+      const tareaEliminada = tareas[index].nombre;
+      
+      // Eliminar las entregas asociadas
+      let entregas = JSON.parse(localStorage.getItem('entregas')) || [];
+      entregas = entregas.filter(e => e.tarea !== tareaEliminada);
+      localStorage.setItem('entregas', JSON.stringify(entregas));
+
+      tareas.splice(index, 1);
+      localStorage.setItem('tareas', JSON.stringify(tareas));
+      
+      alert(`Tarea y entregas asociadas eliminadas.`);
+      cargarDatos();
+  }
+  
+  // (Funciones de Calificaciones - Sin cambios relevantes para esta tarea)
+  function cargarNotasProfesor(container){
+    const notasGuardadas = JSON.parse(localStorage.getItem('notas')) || [];
+    
+    let tablaHTML = `<table id="tablaNotas">
+        <tr><th>Estudiante</th><th>Curso</th><th>Tarea</th><th>Nota</th><th>Acciones</th></tr>`;
+    
+    notasGuardadas.forEach((n, index) => {
+      tablaHTML += `
+        <tr id="nota-row-${index}">
+          <td><input type="text" value="${n.estudiante}" data-col="estudiante" readonly></td>
+          <td><input type="text" value="${n.curso}" data-col="curso" readonly></td>
+          <td><input type="text" value="${n.tarea}" data-col="tarea" readonly></td>
+          <td><input type="number" min="0" max="10" step="0.1" value="${n.nota}" data-col="nota" readonly></td>
+          <td>
+            <button class="action-btn btn-edit" onclick="editarNota(${index})"><i class="fas fa-edit"></i> Editar</button>
+            <button class="action-btn btn-save" onclick="guardarNotaIndividual(${index})" style="display:none;"><i class="fas fa-save"></i> Guardar</button>
+            <button class="action-btn btn-delete" onclick="eliminarNota(${index})"><i class="fas fa-trash"></i> Eliminar</button>
+          </td>
+        </tr>
+      `;
+    });
+    
+    tablaHTML += '</table>';
+    
+    container.innerHTML = `
+      <h3>Gestión de Calificaciones</h3>
+      <p>Haz clic en "Agregar Nota" para añadir una fila o usa "Editar" para modificar una nota existente.</p>
+      ${tablaHTML}
+      <div class="main-button-group">
+        <button class="btn-primary" onclick="agregarFila()">➕ Agregar Nota</button>
+      </div>
+    `;
+  }
+  
+  function editarNota(index) {
+      const row = document.getElementById(`nota-row-${index}`);
+      if (!row) return;
+
+      row.querySelectorAll('input').forEach(input => {
+          if(input.getAttribute('data-col') !== 'nota') {
+              input.setAttribute('readonly', true);
+          } else {
+              input.removeAttribute('readonly');
+          }
+      });
+      
+      row.querySelector('.btn-edit').style.display = 'none';
+      row.querySelector('.btn-save').style.display = 'inline-block';
+      row.classList.add('editing-row');
+  }
+
+  function guardarNotaIndividual(index) {
+      const row = document.getElementById(`nota-row-${index}`);
+      if (!row) return;
+      
+      const inputs = row.querySelectorAll('input');
+      const notaActualizada = {
+          estudiante: inputs[0].value.trim(),
+          curso: inputs[1].value.trim(),
+          tarea: inputs[2].value.trim(),
+          nota: parseFloat(inputs[3].value) || 0
+      };
+
+      if (notaActualizada.estudiante === '' || notaActualizada.curso === '' || notaActualizada.tarea === '') {
+          alert("Los campos de Estudiante, Curso y Tarea no pueden estar vacíos.");
+          return;
+      }
+
+      let notas = JSON.parse(localStorage.getItem('notas')) || [];
+      
+      if (index >= 0 && index < notas.length) {
+          notas[index] = notaActualizada;
+      }
+      
+      localStorage.setItem('notas', JSON.stringify(notas));
+      
+      inputs.forEach(input => {
+          input.setAttribute('readonly', true);
+      });
+      
+      row.querySelector('.btn-edit').style.display = 'inline-block';
+      row.querySelector('.btn-save').style.display = 'none';
+      row.classList.remove('editing-row');
+
+      alert('Nota guardada correctamente.');
+      cargarDatos();
+  }
+  
+  function agregarFila(){
+    const tabla = document.getElementById('tablaNotas');
+    if (!tabla || tabla.rows.length === 0) {
+        cargarDatos(); 
+        return;
+    }
+
+    const newIndex = tabla.rows.length - 1; 
+    const fila = tabla.insertRow();
+    
+    fila.id = `nota-new-row-${newIndex}`; 
+    fila.classList.add('editing-row');
+    
+    fila.innerHTML = `
+        <td><input type="text" placeholder="Usuario" data-col="estudiante"></td>
+        <td><input type="text" placeholder="Curso" data-col="curso"></td>
+        <td><input type="text" placeholder="Tarea" data-col="tarea"></td>
+        <td><input type="number" min="0" max="10" step="0.1" placeholder="Nota" data-col="nota"></td>
+        <td>
+            <button class="action-btn btn-save" onclick="guardarNuevaNota(this)"><i class="fas fa-save"></i> Guardar</button>
+            <button class="action-btn btn-delete" onclick="fila.remove()"><i class="fas fa-trash"></i> Cancelar</button>
+        </td>
+    `;
+    
+    fila.querySelector('input').focus();
+  }
+
+  function guardarNuevaNota(button) {
+      const row = button.closest('tr');
+      const inputs = row.querySelectorAll('input');
+      
+      const nuevaNota = {
+          estudiante: inputs[0].value.trim(),
+          curso: inputs[1].value.trim(),
+          tarea: inputs[2].value.trim(),
+          nota: parseFloat(inputs[3].value) || 0
+      };
+
+      if (nuevaNota.estudiante === '' || nuevaNota.curso === '' || nuevaNota.tarea === '' || nuevaNota.nota === 0) {
+          alert("Por favor, rellena todos los campos de la nueva nota y asegúrate de que la nota no sea cero.");
+          return;
+      }
+
+      let notas = JSON.parse(localStorage.getItem('notas')) || [];
+      notas.push(nuevaNota);
+      localStorage.setItem('notas', JSON.stringify(notas));
+      
+      alert('Nueva nota guardada correctamente.');
+      cargarDatos();
+  }
+
+  function eliminarNota(index) {
+      if (!confirm('¿Estás seguro de que quieres eliminar esta nota?')) {
+          return;
+      }
+      let notas = JSON.parse(localStorage.getItem('notas')) || [];
+      
+      if (index >= 0 && index < notas.length) {
+          notas.splice(index, 1);
+          localStorage.setItem('notas', JSON.stringify(notas));
+          alert('Nota eliminada correctamente.');
+          cargarDatos();
+      }
+  }
+
+
+  function cargarNotasEstudiante(container, user){
+    const notas = JSON.parse(localStorage.getItem('notas')) || [];
+    const misNotas = notas.filter(n => n.estudiante === user);
+    
+    if(misNotas.length===0){
+      container.innerHTML='<h3>Mis Calificaciones</h3><p>No hay notas disponibles para ti.</p>';
+    } else {
+      let tabla = '<h3>Mis Calificaciones</h3><table><tr><th>Curso</th><th>Tarea</th><th>Nota</th></tr>';
+      misNotas.forEach(n => {
+        tabla += `<tr><td>${n.curso}</td><td>${n.tarea}</td><td>${n.nota}</td></tr>`;
+      });
+      tabla += '</table>';
+      container.innerHTML=tabla;
+    }
+  }
+
+  // --- Inicialización ---
+
+  window.onload = ()=>{
+    inicializarCursos(); 
+
+    const logged = localStorage.getItem('userLogged');
+    if(logged){
+      userRole = localStorage.getItem('userRole');
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='flex';
+      
+      const userCode = localStorage.getItem('userCode');
+      document.getElementById('currentUser').textContent = logged;
+      document.getElementById('currentRole').textContent = userRole;
+
+      const nombreCursoElement = document.getElementById('nombreCurso');
+      if (userRole === 'estudiante') {
+          document.getElementById('codigoClaseEstudiante').style.display = 'block';
+          document.getElementById('userCode').textContent = userCode;
+          
+          const nombreClase = CodigosDeClase[userCode] || 'Curso no encontrado';
+          nombreCursoElement.innerHTML = `Clase Activa: **${nombreClase}**`;
+      } else {
+          document.getElementById('codigoClaseEstudiante').style.display = 'none';
+          nombreCursoElement.textContent = 'Modo Profesor: Administra tus clases y tareas.';
+      }
+      
+      cargarDatos();
+      
+    }
+  }
+</script>
+
+</body>
+</html>
